@@ -40,6 +40,6 @@ public class AutorImplementacionServicio implements AutorServicio {
 
     @Override
     public void borrarAutor(String idAutor){
-        autorRepositorio.deleteById(idAutor);;
+        autorRepositorio.deleteById(idAutor);
     }    
 }

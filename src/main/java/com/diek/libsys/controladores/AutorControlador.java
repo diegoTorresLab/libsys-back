@@ -29,7 +29,7 @@ public class AutorControlador {
     public ResponseEntity<Autor> guardarAutor(@RequestBody Autor autor){
         try{
             Autor guardarAutor = autorImplementacionServicio.guardarAutor(autor);
-            return new ResponseEntity<>(guardarAutor, HttpStatus.OK);
+            return new ResponseEntity<>(guardarAutor, HttpStatus.CREATED);
         }
         catch (Exception e){
             e.printStackTrace();
@@ -40,8 +40,8 @@ public class AutorControlador {
     @PutMapping
     public ResponseEntity<Autor> actualizarAutor(@RequestBody Autor autor){
         try{
-            Autor actualizAutor = autorImplementacionServicio.actualizarAutor(autor);
-            return new ResponseEntity<>(actualizAutor,HttpStatus.OK);
+            Autor actualizarAutor = autorImplementacionServicio.actualizarAutor(autor);
+            return new ResponseEntity<>(actualizarAutor,HttpStatus.OK);
         }
         catch (Exception e){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -64,12 +64,15 @@ public class AutorControlador {
 
     @DeleteMapping("/{idAutor}")
     public ResponseEntity<Void> borrarAutor(@PathVariable String idAutor){
-        Optional<Autor> autor = autorImplementacionServicio.obtenerAutorPorId(idAutor);
-        if(autor.isPresent()){
-            autorImplementacionServicio.borrarAutor(autor.get().getIdAutor());
-            return new ResponseEntity<>(HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);            
+        try {
+            Optional<Autor> autor = autorImplementacionServicio.obtenerAutorPorId(idAutor);
+            if(autor.isEmpty()){
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            } 
+            autorImplementacionServicio.borrarAutor(idAutor);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
