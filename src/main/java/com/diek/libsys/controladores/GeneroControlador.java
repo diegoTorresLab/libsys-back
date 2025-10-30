@@ -27,8 +27,8 @@ public class GeneroControlador {
     @PostMapping
     public ResponseEntity<Genero> guardarGenero(@RequestBody Genero genero){
         try {
-            Genero guardaGenero = generoImplementacionServicio.guardarGenero(genero);
-            return new ResponseEntity<>(guardaGenero, HttpStatus.CREATED);
+            Genero guardarGenero = generoImplementacionServicio.guardarGenero(genero);
+            return new ResponseEntity<>(guardarGenero, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

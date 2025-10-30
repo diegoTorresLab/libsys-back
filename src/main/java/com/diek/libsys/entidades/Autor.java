@@ -1,12 +1,17 @@
 package com.diek.libsys.entidades;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.hibernate.generator.EventType;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import org.hibernate.annotations.Generated;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
@@ -37,4 +42,8 @@ public class Autor {
 
     @Column(name = "fecha_registro", insertable = false, updatable = false)
     private LocalDateTime fechaRegistro;
+
+    @ManyToMany(mappedBy = "autores")
+    @JsonIgnore
+    private Set<Libro> libros = new HashSet<>();
 }
