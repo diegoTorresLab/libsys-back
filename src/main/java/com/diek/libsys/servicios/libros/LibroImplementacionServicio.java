@@ -9,9 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.diek.libsys.entidades.Autor;
+import com.diek.libsys.entidades.Editorial;
 import com.diek.libsys.entidades.Genero;
 import com.diek.libsys.entidades.Libro;
 import com.diek.libsys.repositorios.AutorRepositorio;
+import com.diek.libsys.repositorios.EditorialRepositorio;
 import com.diek.libsys.repositorios.GeneroRepositorio;
 import com.diek.libsys.repositorios.LibroRepositorio;
 
@@ -24,6 +26,9 @@ public class LibroImplementacionServicio implements LibroServicio{
     LibroRepositorio libroRepositorio;
 
     @Autowired
+    EditorialRepositorio editorialRepositorio;
+
+    @Autowired
     AutorRepositorio autorRepositorio;
 
     @Autowired
@@ -32,12 +37,20 @@ public class LibroImplementacionServicio implements LibroServicio{
     @Override
     @Transactional
     public Libro guardarLibro(Libro libro){
+        if(libro.getEditorial() != null && !libro.getEditorial().getIdEditorial().isEmpty()){
+            Editorial editorial = editorialRepositorio.findById(libro.getEditorial().getIdEditorial())
+                .orElseThrow(() -> new RuntimeException("Editorial no encontrada"));
+            libro.setEditorial(editorial);
+        }
+
         if(libro.getAutores() != null && !libro.getAutores().isEmpty()){
             Set<Autor> autoresExistentes = new HashSet<>();
             for (Autor autor: libro.getAutores()){
                 autorRepositorio.findById(autor.getIdAutor()).ifPresent(autoresExistentes::add);
             }
             libro.setAutores(autoresExistentes);
+        } else {
+            throw new RuntimeException("Debe seleccionar al menos un autor");
         }
 
         if(libro.getGeneros() != null && !libro.getGeneros().isEmpty()){
@@ -45,6 +58,9 @@ public class LibroImplementacionServicio implements LibroServicio{
             for (Genero genero: libro.getGeneros()){
                 generoRepositorio.findById(genero.getIdGenero()).ifPresent(generosExistentes::add);
             }
+            libro.setGeneros(generosExistentes);
+        } else {
+            throw new RuntimeException("Debe seleccionar al menos un genero");
         }
         return libroRepositorio.save(libro);
     }
@@ -57,6 +73,9 @@ public class LibroImplementacionServicio implements LibroServicio{
             for(Autor autor: libro.getAutores()){
                 autorRepositorio.findById(autor.getIdAutor()).ifPresent(autoresExistentes::add);
             }
+            libro.setAutores(autoresExistentes);
+        } else {
+            throw new RuntimeException("Debe seleccionar al menos un autor");
         }
 
         if(libro.getGeneros() != null && !libro.getGeneros().isEmpty()){
@@ -64,6 +83,9 @@ public class LibroImplementacionServicio implements LibroServicio{
             for(Genero genero: libro.getGeneros()){
                 generoRepositorio.findById(genero.getIdGenero()).ifPresent(generosExistentes::add);
             }
+            libro.setGeneros(generosExistentes);
+        } else {
+            throw new RuntimeException("Debe seleccionar al menos un geenro");
         }
         return libroRepositorio.save(libro);
     }

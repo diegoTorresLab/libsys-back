@@ -20,7 +20,6 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -39,12 +38,13 @@ public class Libro {
     @NotEmpty
     private String titulo;
 
-    @NotBlank
+    @NotEmpty
     @Column(unique = true)
     private String isbn;
 
     @ManyToOne
     @JoinColumn(name = "id_editorial", referencedColumnName = "id_editorial")
+    @JsonIgnoreProperties({"libros", "fechaRegistro"})
     private Editorial editorial;
 
     @NotNull
@@ -80,6 +80,6 @@ public class Libro {
         joinColumns = @JoinColumn(name = "id_libro"),
         inverseJoinColumns = @JoinColumn(name = "id_genero")
     )
-    @JsonIgnoreProperties("generos")
+    @JsonIgnoreProperties({"libros", "fechaRegistro"})
     private Set<Genero> generos = new HashSet<>();
 }

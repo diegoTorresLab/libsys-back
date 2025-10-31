@@ -71,4 +71,48 @@ public class LibroControlador {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     } 
+
+
+
+    @PutMapping("/{idLibro}/autor/{idAutor}")
+    public ResponseEntity<Libro> agregarAutorLibro(@PathVariable String idLibro, @PathVariable String idAutor){
+        try {
+            Libro libro = libroImplementacionServicio.agregarAutorLibro(idLibro, idAutor);
+            return new ResponseEntity<>(libro, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PutMapping("{lidLibro}/genero/{idGenero}")
+    public ResponseEntity<Libro> agregarGeneroLibro(@PathVariable String idLibro, @PathVariable String idGenero){
+        try {
+            Libro libro = libroImplementacionServicio.agregarGeneroLibro(idLibro, idGenero);
+            return new ResponseEntity<>(libro, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+
+
+    @DeleteMapping("/{idLibro}/autor/{idAutor}")
+    public ResponseEntity<Libro> borrarAutorLibro(@PathVariable String idLibro, @PathVariable String idAutor){
+        try {
+            Libro libro = libroImplementacionServicio.borrarAutorLibro(idLibro, idAutor);
+            return new ResponseEntity<>(libro, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @DeleteMapping("/{idLibro}/genero/{idGenero}")
+    public ResponseEntity<Libro> borrarGeneroLibro(@PathVariable String idLibro, @PathVariable String idGenero){
+        try {
+            Libro libro = libroImplementacionServicio.borrarGeneroLibro(idLibro, idGenero);
+            return new ResponseEntity<>(libro, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
 }
