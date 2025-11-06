@@ -10,10 +10,12 @@ import org.hibernate.annotations.Generated;
 import org.hibernate.generator.EventType;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
@@ -22,12 +24,20 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
-@Data
+@Getter
+@Setter
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
+@ToString(exclude = {"autores", "generos"})
+@EqualsAndHashCode(of = {"autores", "generos"})
 @Table(name = "libros")
 public class Libro {
     @Id
@@ -42,9 +52,10 @@ public class Libro {
     @Column(unique = true)
     private String isbn;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_editorial", referencedColumnName = "id_editorial")
-    @JsonIgnoreProperties({"libros", "fechaRegistro"})
+    @JsonIgnoreProperties({"libros", "paisOrigen", "sitioWeb", "email", "telefono", "fechaRegistro"})
+    @JsonManagedReference("libro-editorial")
     private Editorial editorial;
 
     @NotNull
@@ -61,25 +72,31 @@ public class Libro {
     @NotEmpty
     private String descripcion;
 
+    @NotEmpty
+    @Column(name = "tipo_material")
+    private String tipoMaterial;
+
     @Column(name = "fecha_registro", insertable = false, updatable = false)
     private LocalDateTime fechaRegistro;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @JoinTable(
         name = "libros_autores",
         joinColumns = @JoinColumn(name = "id_libro"),
         inverseJoinColumns = @JoinColumn(name = "id_autor")
     )
     @JsonIgnoreProperties({"libros", "paisOrigen", "biografia", "fechaRegistro"})
+    @JsonManagedReference("libro-autor")
     private Set<Autor> autores = new HashSet<>();
 
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @JoinTable(
         name = "libros_generos",
         joinColumns = @JoinColumn(name = "id_libro"),
         inverseJoinColumns = @JoinColumn(name = "id_genero")
     )
-    @JsonIgnoreProperties({"libros", "fechaRegistro"})
+    @JsonManagedReference("libro-genero")
     private Set<Genero> generos = new HashSet<>();
 }

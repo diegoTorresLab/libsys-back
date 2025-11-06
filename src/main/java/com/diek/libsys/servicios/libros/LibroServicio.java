@@ -3,6 +3,7 @@ package com.diek.libsys.servicios.libros;
 import java.util.List;
 import java.util.Optional;
 
+import com.diek.libsys.dtos.LibroDTO;
 import com.diek.libsys.entidades.Libro;
 
 public interface LibroServicio {
@@ -10,19 +11,19 @@ public interface LibroServicio {
     
     Libro actualizarLibro(Libro libro);
 
-    List<Libro> obtenerLibros();
+    List<LibroDTO> obtenerLibros();
 
-    Optional<Libro> obtenerLibroPorId(String idLibro);
+    Optional<LibroDTO> obtenerLibroPorId(String idLibro);
     
     void borrarLibro(String idLibro);
 
     //Manejar Autores
-    Libro agregarAutorLibro(String idLibro, String idAutor);
+    LibroDTO agregarAutorLibro(String idLibro, String idAutor);
 
-    Libro borrarAutorLibro(String idLibro, String idAutor);
+    LibroDTO borrarAutorLibro(String idLibro, String idAutor);
 
     //Manejar Generos
-    Libro agregarGeneroLibro(String idLibro, String idGenero);
+    LibroDTO agregarGeneroLibro(String idLibro, String idGenero);
 
-    Libro borrarGeneroLibro(String idLibro, String idGenero);
+    LibroDTO borrarGeneroLibro(String idLibro, String idGenero);
 }

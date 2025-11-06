@@ -15,9 +15,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.diek.libsys.dtos.LibroDTO;
 import com.diek.libsys.entidades.Libro;
 import com.diek.libsys.servicios.libros.LibroImplementacionServicio;
 
+import org.springframework.transaction.annotation.Transactional;
 @RestController
 @RequestMapping("/libro")
 public class LibroControlador {
@@ -30,6 +32,7 @@ public class LibroControlador {
             Libro guardarLibro = libroImplementacionServicio.guardarLibro(libro);
             return new ResponseEntity<>(guardarLibro, HttpStatus.CREATED);
         } catch (Exception e) {
+            e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
@@ -45,13 +48,15 @@ public class LibroControlador {
     }
 
     @GetMapping
-    public ResponseEntity<List<Libro>> obtenerLibros(){
+    @Transactional(readOnly = true)
+    public ResponseEntity<List<LibroDTO>> obtenerLibros(){
         return new ResponseEntity<>(libroImplementacionServicio.obtenerLibros(), HttpStatus.OK);
     }
 
     @GetMapping("/{idLibro}")
-    public ResponseEntity<Libro> obtenerLibroPorId(@PathVariable String idLibro){
-        Optional<Libro> libro = libroImplementacionServicio.obtenerLibroPorId(idLibro);
+    @Transactional(readOnly = true)
+    public ResponseEntity<LibroDTO> obtenerLibroPorId(@PathVariable String idLibro){
+        Optional<LibroDTO> libro = libroImplementacionServicio.obtenerLibroPorId(idLibro);
         if(libro.isEmpty()){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -61,7 +66,7 @@ public class LibroControlador {
     @DeleteMapping("/{idLibro}")
     public ResponseEntity<Void> borrarLibro(@PathVariable String idLibro){
         try {
-            Optional<Libro> libro = libroImplementacionServicio.obtenerLibroPorId(idLibro);
+            Optional<LibroDTO> libro = libroImplementacionServicio.obtenerLibroPorId(idLibro);
             if(libro.isEmpty()){
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
@@ -75,21 +80,25 @@ public class LibroControlador {
 
 
     @PutMapping("/{idLibro}/autor/{idAutor}")
-    public ResponseEntity<Libro> agregarAutorLibro(@PathVariable String idLibro, @PathVariable String idAutor){
+    public ResponseEntity<LibroDTO> agregarAutorLibro(@PathVariable String idLibro, @PathVariable String idAutor){
         try {
-            Libro libro = libroImplementacionServicio.agregarAutorLibro(idLibro, idAutor);
+            LibroDTO libro = libroImplementacionServicio.agregarAutorLibro(idLibro, idAutor);
             return new ResponseEntity<>(libro, HttpStatus.OK);
         } catch (Exception e) {
+            System.err.println("Error: " + e.getMessage());
+            e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
-    @PutMapping("{lidLibro}/genero/{idGenero}")
-    public ResponseEntity<Libro> agregarGeneroLibro(@PathVariable String idLibro, @PathVariable String idGenero){
+    @PutMapping("/{idLibro}/genero/{idGenero}")
+    public ResponseEntity<LibroDTO> agregarGeneroLibro(@PathVariable String idLibro, @PathVariable String idGenero){
         try {
-            Libro libro = libroImplementacionServicio.agregarGeneroLibro(idLibro, idGenero);
+            LibroDTO libro = libroImplementacionServicio.agregarGeneroLibro(idLibro, idGenero);
             return new ResponseEntity<>(libro, HttpStatus.OK);
         } catch (Exception e) {
+            System.err.println("Error: " + e.getMessage());
+            e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
@@ -97,9 +106,9 @@ public class LibroControlador {
 
 
     @DeleteMapping("/{idLibro}/autor/{idAutor}")
-    public ResponseEntity<Libro> borrarAutorLibro(@PathVariable String idLibro, @PathVariable String idAutor){
+    public ResponseEntity<LibroDTO> borrarAutorLibro(@PathVariable String idLibro, @PathVariable String idAutor){
         try {
-            Libro libro = libroImplementacionServicio.borrarAutorLibro(idLibro, idAutor);
+            LibroDTO libro = libroImplementacionServicio.borrarAutorLibro(idLibro, idAutor);
             return new ResponseEntity<>(libro, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -107,9 +116,9 @@ public class LibroControlador {
     }
 
     @DeleteMapping("/{idLibro}/genero/{idGenero}")
-    public ResponseEntity<Libro> borrarGeneroLibro(@PathVariable String idLibro, @PathVariable String idGenero){
+    public ResponseEntity<LibroDTO> borrarGeneroLibro(@PathVariable String idLibro, @PathVariable String idGenero){
         try {
-            Libro libro = libroImplementacionServicio.borrarGeneroLibro(idLibro, idGenero);
+            LibroDTO libro = libroImplementacionServicio.borrarGeneroLibro(idLibro, idGenero);
             return new ResponseEntity<>(libro, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

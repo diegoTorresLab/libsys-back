@@ -7,22 +7,29 @@ import java.util.Set;
 import org.hibernate.annotations.Generated;
 import org.hibernate.generator.EventType;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@ToString(exclude = {"libro"})
+@EqualsAndHashCode(of = "idEditorial")
 @Entity
 @Table(name = "editoriales")
 public class Editorial {
@@ -52,6 +59,6 @@ public class Editorial {
     private LocalDateTime fechaRegistro;
 
     @OneToMany(mappedBy = "editorial")
-    @JsonIgnore
+    @JsonBackReference("libro-editorial")
     private Set<Libro> libro = new HashSet<>();
 }

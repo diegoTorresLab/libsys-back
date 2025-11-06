@@ -8,16 +8,18 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.diek.libsys.dtos.LibroDTO;
 import com.diek.libsys.entidades.Autor;
 import com.diek.libsys.entidades.Editorial;
 import com.diek.libsys.entidades.Genero;
 import com.diek.libsys.entidades.Libro;
+import com.diek.libsys.mappers.LibroMapper;
 import com.diek.libsys.repositorios.AutorRepositorio;
 import com.diek.libsys.repositorios.EditorialRepositorio;
 import com.diek.libsys.repositorios.GeneroRepositorio;
 import com.diek.libsys.repositorios.LibroRepositorio;
 
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
@@ -33,6 +35,9 @@ public class LibroImplementacionServicio implements LibroServicio{
 
     @Autowired
     GeneroRepositorio generoRepositorio;
+
+    @Autowired
+    LibroMapper libroMapper;
 
     @Override
     @Transactional
@@ -85,19 +90,23 @@ public class LibroImplementacionServicio implements LibroServicio{
             }
             libro.setGeneros(generosExistentes);
         } else {
-            throw new RuntimeException("Debe seleccionar al menos un geenro");
+            throw new RuntimeException("Debe seleccionar al menos un genero");
         }
         return libroRepositorio.save(libro);
     }
 
     @Override
-    public List<Libro> obtenerLibros(){
-        return libroRepositorio.findAll();
+    @Transactional(readOnly = true)
+    public List<LibroDTO> obtenerLibros(){
+        List<Libro> libros = libroRepositorio.findAll();
+        return libroMapper.toListDTO(libros);
     }
 
     @Override
-    public Optional<Libro> obtenerLibroPorId(String idLibro){
-        return libroRepositorio.findById(idLibro);
+    @Transactional(readOnly = true)
+    public Optional<LibroDTO> obtenerLibroPorId(String idLibro){
+        return libroRepositorio.findById(idLibro)
+            .map(libroMapper::toDTO);
     }
 
     @Override 
@@ -110,46 +119,51 @@ public class LibroImplementacionServicio implements LibroServicio{
 
     @Override 
     @Transactional
-    public Libro agregarAutorLibro(String idLibro, String idAutor){
+    public LibroDTO agregarAutorLibro(String idLibro, String idAutor){
         Libro libro = libroRepositorio.findById(idLibro)
             .orElseThrow(() -> new RuntimeException("Libro no encontrado"));
         Autor autor = autorRepositorio.findById(idAutor)
             .orElseThrow(() -> new RuntimeException("Autor no encontrado"));
         
         libro.getAutores().add(autor);
-        return libroRepositorio.save(libro);
+        Libro libroActualizado = libroRepositorio.save(libro);
+        return libroMapper.toDTO(libroActualizado);
     }
 
     @Override
     @Transactional
-    public Libro agregarGeneroLibro(String idLibro, String idGenero){
+    public LibroDTO agregarGeneroLibro(String idLibro, String idGenero){
         Libro libro = libroRepositorio.findById(idLibro)
             .orElseThrow(() -> new RuntimeException("Libro no encontrado"));
         Genero genero = generoRepositorio.findById(idGenero)
             .orElseThrow(() -> new RuntimeException("Genero no encontrado"));
+        
         libro.getGeneros().add(genero);
-        return libroRepositorio.save(libro);
+        Libro libroActualizado = libroRepositorio.save(libro);
+        return libroMapper.toDTO(libroActualizado);
     }
 
 
 
     @Override
     @Transactional
-    public Libro borrarAutorLibro(String idLibro, String idAutor){
+    public LibroDTO borrarAutorLibro(String idLibro, String idAutor){
         Libro libro = libroRepositorio.findById(idLibro)
             .orElseThrow(() -> new RuntimeException("Libro no encontrado"));
         
         libro.getAutores().removeIf(autor -> autor.getIdAutor().equals(idAutor));
-        return libroRepositorio.save(libro);
+        Libro libroActualizado = libroRepositorio.save(libro);
+        return libroMapper.toDTO(libroActualizado);
     }
 
     @Override
     @Transactional
-    public Libro borrarGeneroLibro(String idLibro, String idGenero){
+    public LibroDTO borrarGeneroLibro(String idLibro, String idGenero){
         Libro libro = libroRepositorio.findById(idLibro)
             .orElseThrow(() -> new RuntimeException("Libro no encontrado"));
         
         libro.getGeneros().removeIf(genero -> genero.getIdGenero().equals(idGenero));
-        return libroRepositorio.save(libro);
+        Libro libroActualizado =  libroRepositorio.save(libro);
+        return libroMapper.toDTO(libroActualizado);
     }
 }
