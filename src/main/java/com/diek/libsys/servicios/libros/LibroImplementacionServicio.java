@@ -42,56 +42,16 @@ public class LibroImplementacionServicio implements LibroServicio{
     @Override
     @Transactional
     public Libro guardarLibro(Libro libro){
-        if(libro.getEditorial() != null && !libro.getEditorial().getIdEditorial().isEmpty()){
-            Editorial editorial = editorialRepositorio.findById(libro.getEditorial().getIdEditorial())
-                .orElseThrow(() -> new RuntimeException("Editorial no encontrada"));
-            libro.setEditorial(editorial);
-        }
-
-        if(libro.getAutores() != null && !libro.getAutores().isEmpty()){
-            Set<Autor> autoresExistentes = new HashSet<>();
-            for (Autor autor: libro.getAutores()){
-                autorRepositorio.findById(autor.getIdAutor()).ifPresent(autoresExistentes::add);
-            }
-            libro.setAutores(autoresExistentes);
-        } else {
-            throw new RuntimeException("Debe seleccionar al menos un autor");
-        }
-
-        if(libro.getGeneros() != null && !libro.getGeneros().isEmpty()){
-            Set<Genero> generosExistentes = new HashSet<>();
-            for (Genero genero: libro.getGeneros()){
-                generoRepositorio.findById(genero.getIdGenero()).ifPresent(generosExistentes::add);
-            }
-            libro.setGeneros(generosExistentes);
-        } else {
-            throw new RuntimeException("Debe seleccionar al menos un genero");
-        }
+        validarEditorial(libro);
+        validarRelaciones(libro);
         return libroRepositorio.save(libro);
     }
 
     @Override
     @Transactional
     public Libro actualizarLibro(Libro libro){
-        if(libro.getAutores() != null && !libro.getAutores().isEmpty()){
-            Set<Autor> autoresExistentes = new HashSet<>();
-            for(Autor autor: libro.getAutores()){
-                autorRepositorio.findById(autor.getIdAutor()).ifPresent(autoresExistentes::add);
-            }
-            libro.setAutores(autoresExistentes);
-        } else {
-            throw new RuntimeException("Debe seleccionar al menos un autor");
-        }
-
-        if(libro.getGeneros() != null && !libro.getGeneros().isEmpty()){
-            Set<Genero> generosExistentes = new HashSet<>();
-            for(Genero genero: libro.getGeneros()){
-                generoRepositorio.findById(genero.getIdGenero()).ifPresent(generosExistentes::add);
-            }
-            libro.setGeneros(generosExistentes);
-        } else {
-            throw new RuntimeException("Debe seleccionar al menos un genero");
-        }
+        validarEditorial(libro);
+        validarRelaciones(libro);
         return libroRepositorio.save(libro);
     }
 
@@ -120,8 +80,7 @@ public class LibroImplementacionServicio implements LibroServicio{
     @Override 
     @Transactional
     public LibroDTO agregarAutorLibro(String idLibro, String idAutor){
-        Libro libro = libroRepositorio.findById(idLibro)
-            .orElseThrow(() -> new RuntimeException("Libro no encontrado"));
+        Libro libro = validarLibroExistente(idLibro);
         Autor autor = autorRepositorio.findById(idAutor)
             .orElseThrow(() -> new RuntimeException("Autor no encontrado"));
         
@@ -133,8 +92,7 @@ public class LibroImplementacionServicio implements LibroServicio{
     @Override
     @Transactional
     public LibroDTO agregarGeneroLibro(String idLibro, String idGenero){
-        Libro libro = libroRepositorio.findById(idLibro)
-            .orElseThrow(() -> new RuntimeException("Libro no encontrado"));
+        Libro libro = validarLibroExistente(idLibro);
         Genero genero = generoRepositorio.findById(idGenero)
             .orElseThrow(() -> new RuntimeException("Genero no encontrado"));
         
@@ -148,9 +106,7 @@ public class LibroImplementacionServicio implements LibroServicio{
     @Override
     @Transactional
     public LibroDTO borrarAutorLibro(String idLibro, String idAutor){
-        Libro libro = libroRepositorio.findById(idLibro)
-            .orElseThrow(() -> new RuntimeException("Libro no encontrado"));
-        
+        Libro libro = validarLibroExistente(idLibro);
         libro.getAutores().removeIf(autor -> autor.getIdAutor().equals(idAutor));
         Libro libroActualizado = libroRepositorio.save(libro);
         return libroMapper.toDTO(libroActualizado);
@@ -166,4 +122,43 @@ public class LibroImplementacionServicio implements LibroServicio{
         Libro libroActualizado =  libroRepositorio.save(libro);
         return libroMapper.toDTO(libroActualizado);
     }
+
+
+    private void validarEditorial(Libro libro){
+        if(libro.getEditorial() != null && !libro.getEditorial().getIdEditorial().isEmpty()){
+            Editorial editorial = editorialRepositorio.findById(libro.getEditorial().getIdEditorial())
+                .orElseThrow(() -> new RuntimeException("Editorial no encontrada"));
+            libro.setEditorial(editorial);
+        } else {
+            throw new RuntimeException("Debe de crear una editorial para el libro");
+        }
+    }
+
+    private void validarRelaciones(Libro libro){
+        if(libro.getAutores() != null && !libro.getAutores().isEmpty()){
+            Set<Autor> autoresExistentes = new HashSet<>();
+            for(Autor autor: libro.getAutores()){
+                autorRepositorio.findById(autor.getIdAutor()).ifPresent(autoresExistentes::add);
+            }
+            libro.setAutores(autoresExistentes);
+        } else {
+            throw new RuntimeException("Debe seleccionar al menos un autor");
+        }
+
+        if(libro.getGeneros() != null && !libro.getGeneros().isEmpty()){
+            Set<Genero> generosExistentes = new HashSet<>();
+            for(Genero genero: libro.getGeneros()){
+                generoRepositorio.findById(genero.getIdGenero()).ifPresent(generosExistentes::add);
+            }
+            libro.setGeneros(generosExistentes);
+        } else {
+            throw new RuntimeException("Debe seleccionar al menos un genero");
+        }
+    }
+
+    public Libro validarLibroExistente(String idLibro){
+        return libroRepositorio.findById(idLibro)
+            .orElseThrow(() -> new RuntimeException("Libro no encontrado"));
+    }
 }
+

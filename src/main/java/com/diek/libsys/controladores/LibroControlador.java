@@ -32,7 +32,6 @@ public class LibroControlador {
             Libro guardarLibro = libroImplementacionServicio.guardarLibro(libro);
             return new ResponseEntity<>(guardarLibro, HttpStatus.CREATED);
         } catch (Exception e) {
-            e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
