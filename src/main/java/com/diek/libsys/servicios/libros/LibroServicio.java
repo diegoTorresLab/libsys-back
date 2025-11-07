@@ -17,7 +17,7 @@ public interface LibroServicio {
     
     void borrarLibro(String idLibro);
 
-    //Manejar Autores
+    //ManejarAutores
     LibroDTO agregarAutorLibro(String idLibro, String idAutor);
 
     LibroDTO borrarAutorLibro(String idLibro, String idAutor);
