@@ -48,10 +48,10 @@ public class Autor {
     @NotEmpty
     private String biografia;
 
-    @Column(name = "fecha_registro", insertable = false, updatable = false)
+    @Column(name = "fecha_registro", updatable = false, insertable = false)
     private LocalDateTime fechaRegistro;
 
     @ManyToMany(mappedBy = "autores")
-    @JsonBackReference("libro-autor")
+    @JsonBackReference
     private Set<Libro> libros = new HashSet<>();
 }

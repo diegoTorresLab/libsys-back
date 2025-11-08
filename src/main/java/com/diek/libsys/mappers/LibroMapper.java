@@ -15,6 +15,9 @@ import com.diek.libsys.entidades.Libro;
 @Component
 public class LibroMapper {
     public LibroDTO toDTO(Libro libros){
+        if (libros == null) {
+            return null;
+        }
         LibroDTO dto = new LibroDTO();
         dto.setIdLibro(libros.getIdLibro());
         dto.setTitulo(libros.getTitulo());
@@ -58,6 +61,9 @@ public class LibroMapper {
     } 
     
     public List<LibroDTO> toListDTO(List<Libro> libros){
+        if (libros == null) {
+            return null;
+        }
         return libros.stream()
             .map(this::toDTO)
             .collect(Collectors.toList());

@@ -28,7 +28,7 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = {"libro"})
+@ToString(exclude = {"libros"})
 @EqualsAndHashCode(of = "idEditorial")
 @Entity
 @Table(name = "editoriales")
@@ -59,6 +59,6 @@ public class Editorial {
     private LocalDateTime fechaRegistro;
 
     @OneToMany(mappedBy = "editorial")
-    @JsonBackReference("libro-editorial")
-    private Set<Libro> libro = new HashSet<>();
+    @JsonBackReference
+    private Set<Libro> libros = new HashSet<>();
 }

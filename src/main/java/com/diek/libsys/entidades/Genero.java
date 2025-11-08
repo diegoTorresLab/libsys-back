@@ -39,6 +39,6 @@ public class Genero {
     private String nombre;
 
     @ManyToMany(mappedBy = "generos")
-    @JsonBackReference("libro-genero")
+    @JsonBackReference
     private Set<Libro> libros = new HashSet<>();
 }
