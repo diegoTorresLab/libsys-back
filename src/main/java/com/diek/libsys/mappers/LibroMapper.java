@@ -15,7 +15,7 @@ import com.diek.libsys.entidades.Libro;
 @Component
 public class LibroMapper {
     public LibroDTO toDTO(Libro libros){
-        if (libros == null) {
+        if(libros == null){
             return null;
         }
         LibroDTO dto = new LibroDTO();
@@ -69,5 +69,5 @@ public class LibroMapper {
             .collect(Collectors.toList());
     }
 }
-    
+
 

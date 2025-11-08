@@ -20,6 +20,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -96,4 +97,10 @@ public class Libro {
     )
     @JsonIgnoreProperties({"libros"})
     private Set<Genero> generos = new HashSet<>();
+
+
+
+    @OneToMany(mappedBy = "libro")
+    @JsonIgnoreProperties("libro-ejemplar")
+    private Set<Ejemplar> ejemplares = new HashSet<>();
 }

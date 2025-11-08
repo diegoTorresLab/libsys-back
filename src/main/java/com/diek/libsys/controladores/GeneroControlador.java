@@ -34,7 +34,7 @@ public class GeneroControlador {
         }
     }
 
-    @PutMapping
+    @PutMapping 
     public ResponseEntity<Genero> actualizarGenero(@RequestBody Genero genero){
         try {
             Genero actualizarGenero = generoImplementacionServicio.actualizarGenero(genero);
