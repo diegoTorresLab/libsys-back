@@ -6,7 +6,6 @@ import org.hibernate.annotations.Generated;
 import org.hibernate.generator.EventType;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -37,8 +36,7 @@ public class Ejemplar {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_libro", referencedColumnName = "id_libro")
-    @JsonIgnoreProperties({"editorial", "generos", "autores", "ejemplar"})
-    @JsonManagedReference("libro-ejemplar")
+    @JsonIgnoreProperties({"ejemplares"})
     private Libro libro;
 
     @Generated(event = EventType.INSERT)
@@ -55,5 +53,8 @@ public class Ejemplar {
     @NotEmpty
     @Column(name = "ubicacion_fisica")
     private String ubicacionFisica;
+
+    @NotEmpty
+    private String observaciones;
 }
     

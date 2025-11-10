@@ -9,6 +9,7 @@ import java.util.Set;
 import org.hibernate.annotations.Generated;
 import org.hibernate.generator.EventType;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.CascadeType;
@@ -20,6 +21,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -35,7 +37,7 @@ import lombok.ToString;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = {"autores", "generos"})
+@ToString(exclude = {"autores", "generos", "ejemplares"})
 @EqualsAndHashCode(of = "idLibro")
 @Table(name = "libros")
 public class Libro {
@@ -96,4 +98,8 @@ public class Libro {
     )
     @JsonIgnoreProperties({"libros"})
     private Set<Genero> generos = new HashSet<>();
+
+    @OneToMany(mappedBy = "libro")
+    @JsonBackReference
+    private Set<Ejemplar> ejemplares = new HashSet<>();
 }

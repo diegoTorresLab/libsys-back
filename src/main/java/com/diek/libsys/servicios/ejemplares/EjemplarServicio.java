@@ -11,7 +11,7 @@ public interface EjemplarServicio {
 
     Ejemplar actualizarEjemplar(Ejemplar ejemplar);
 
-    List<EjemplarDTO> obtenerEjemplares();
+    List<EjemplarDTO> obtenerEjemplaresPorLibro(String idLibro);
 
     Optional <EjemplarDTO> obtenerEjemplarPorId(String idEjemplar);
 

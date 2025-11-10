@@ -1,5 +1,6 @@
 package com.diek.libsys.controladores;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,18 +17,23 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.diek.libsys.dtos.EjemplarDTO;
 import com.diek.libsys.entidades.Ejemplar;
+import com.diek.libsys.entidades.Libro;
 import com.diek.libsys.servicios.ejemplares.EjemplarImplementacionServicio;
 
 
 @RestController
-@RequestMapping("/inventario")
+@RequestMapping("/libro/{idLibro}/ejemplar")
 public class EjemplarControlador {
     @Autowired
     EjemplarImplementacionServicio ejemplarImplementacionServicio;
 
     @PostMapping
-    public ResponseEntity<Ejemplar> guardarEjemplar(@RequestBody Ejemplar ejemplar){
+    public ResponseEntity<Ejemplar> guardarEjemplar(
+        @PathVariable String idLibro, 
+        @RequestBody Ejemplar ejemplar){
         try {
+            ejemplar.setLibro(new Libro());
+            ejemplar.getLibro().setIdLibro(idLibro);
             Ejemplar guardarEjemplar = ejemplarImplementacionServicio.guardarEjemplar(ejemplar);
             return new ResponseEntity<>(guardarEjemplar, HttpStatus.CREATED);
         } catch (Exception e) {
@@ -35,14 +41,26 @@ public class EjemplarControlador {
         }
     }
 
-    @PutMapping
-    public ResponseEntity<Ejemplar> actualizarEjemplar(@RequestBody Ejemplar ejemplar){
+    @PutMapping("/{idEjemplar}")
+    public ResponseEntity<Ejemplar> actualizarEjemplar(
+        @PathVariable String idLibro, 
+        @RequestBody Ejemplar ejemplar, 
+        @PathVariable String idEjemplar){
         try {
+            ejemplar.setIdEjemplar(idEjemplar);
+            ejemplar.setLibro(new Libro());
+            ejemplar.getLibro().setIdLibro(idLibro);
             Ejemplar actualizarEjemplar = ejemplarImplementacionServicio.actualizarEjemplar(ejemplar);
             return new ResponseEntity<>(actualizarEjemplar, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+    }
+    
+    @GetMapping
+    public ResponseEntity<List<EjemplarDTO>> obtenerEjemplaresPorLibro(@PathVariable String idLibro){
+        List<EjemplarDTO> ejemplares = ejemplarImplementacionServicio.obtenerEjemplaresPorLibro(idLibro);
+        return new ResponseEntity<>(ejemplares, HttpStatus.OK);
     }
 
     @GetMapping("/{idEjemplar}")

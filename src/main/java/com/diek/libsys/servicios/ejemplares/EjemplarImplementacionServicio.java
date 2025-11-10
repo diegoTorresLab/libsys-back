@@ -45,19 +45,21 @@ public class EjemplarImplementacionServicio implements EjemplarServicio{
             Libro libro = libroRepositorio.findById(ejemplar.getLibro().getIdLibro())
                 .orElseThrow(() -> new RuntimeException("Libro no encontrado")); 
             ejemplar.setLibro(libro);
+        } else {
+            throw new RuntimeException("El ejemplar debe estar asociado a un libro");
         }
     }
 
     
     @Override
-    @Transactional
-    public List<EjemplarDTO> obtenerEjemplares(){
-        List<Ejemplar> ejemplares = ejemplarRepositorio.findAll();
+    @Transactional(readOnly = true)
+    public List<EjemplarDTO> obtenerEjemplaresPorLibro(String idLibro){
+        List<Ejemplar> ejemplares = ejemplarRepositorio.findByLibroIdLibro(idLibro);
         return ejemplarMapper.toDTOList(ejemplares);
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public Optional<EjemplarDTO> obtenerEjemplarPorId(String idEjemplar){
         return ejemplarRepositorio.findById(idEjemplar)
             .map(ejemplarMapper::toDTO);

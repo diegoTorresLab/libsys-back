@@ -14,4 +14,5 @@ public class EjemplarDTO {
     private String estadoEjemplar;
     private String fechaAdquisicion;
     private String ubicacionFisica;
+    private String observaciones;
 }
