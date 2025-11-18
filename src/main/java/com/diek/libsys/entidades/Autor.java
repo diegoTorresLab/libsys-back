@@ -36,10 +36,8 @@ public class Autor {
     private String idAutor;
 
     @NotEmpty
-    private String nombre;
-
-    @NotEmpty
-    private String apellido;
+    @Column(name = "nombre_completo")
+    private String nombreCompleto;
 
     @NotEmpty   
     @Column(name = "pais_origen") 

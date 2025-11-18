@@ -41,8 +41,7 @@ public class LibroMapper {
             Set<AutorDTO> autoresDTO = libros.getAutores().stream()
                 .map(autor -> new AutorDTO(
                     autor.getIdAutor(), 
-                    autor.getNombre(), 
-                    autor.getApellido()
+                    autor.getNombreCompleto()
                     ))
                 .collect(Collectors.toSet());
             dto.setAutores(autoresDTO);
