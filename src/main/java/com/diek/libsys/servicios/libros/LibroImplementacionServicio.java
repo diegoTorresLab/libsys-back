@@ -75,54 +75,6 @@ public class LibroImplementacionServicio implements LibroServicio{
         libroRepositorio.deleteById(idLibro);
     }
 
-
-
-    @Override 
-    @Transactional
-    public LibroDTO agregarAutorLibro(String idLibro, String idAutor){
-        Libro libro = validarLibroExistente(idLibro);
-        Autor autor = autorRepositorio.findById(idAutor)
-            .orElseThrow(() -> new RuntimeException("Autor no encontrado"));
-        
-        libro.getAutores().add(autor);
-        Libro libroActualizado = libroRepositorio.save(libro);
-        return libroMapper.toDTO(libroActualizado);
-    }
-
-    @Override
-    @Transactional
-    public LibroDTO agregarGeneroLibro(String idLibro, String idGenero){
-        Libro libro = validarLibroExistente(idLibro);
-        Genero genero = generoRepositorio.findById(idGenero)
-            .orElseThrow(() -> new RuntimeException("Genero no encontrado"));
-        
-        libro.getGeneros().add(genero);
-        Libro libroActualizado = libroRepositorio.save(libro);
-        return libroMapper.toDTO(libroActualizado);
-    }
-
-
-
-    @Override
-    @Transactional
-    public LibroDTO borrarAutorLibro(String idLibro, String idAutor){
-        Libro libro = validarLibroExistente(idLibro);
-        libro.getAutores().removeIf(autor -> autor.getIdAutor().equals(idAutor));
-        Libro libroActualizado = libroRepositorio.save(libro);
-        return libroMapper.toDTO(libroActualizado);
-    }
-
-    @Override
-    @Transactional
-    public LibroDTO borrarGeneroLibro(String idLibro, String idGenero){
-        Libro libro = validarLibroExistente(idLibro);
-        
-        libro.getGeneros().removeIf(genero -> genero.getIdGenero().equals(idGenero));
-        Libro libroActualizado =  libroRepositorio.save(libro);
-        return libroMapper.toDTO(libroActualizado);
-    }
-
-
     private void validarEditorial(Libro libro){
         if(libro.getEditorial() != null && !libro.getEditorial().getIdEditorial().isEmpty()){
             Editorial editorial = editorialRepositorio.findById(libro.getEditorial().getIdEditorial())
@@ -132,6 +84,7 @@ public class LibroImplementacionServicio implements LibroServicio{
             throw new RuntimeException("Debe de crear una editorial para el libro");
         }
     }
+
 
     private void validarRelaciones(Libro libro){
         if(libro.getAutores() != null && !libro.getAutores().isEmpty()){
@@ -153,11 +106,6 @@ public class LibroImplementacionServicio implements LibroServicio{
         } else {
             throw new RuntimeException("Debe seleccionar al menos un genero");
         }
-    }
-
-    public Libro validarLibroExistente(String idLibro){
-        return libroRepositorio.findById(idLibro)
-            .orElseThrow(() -> new RuntimeException("Libro no encontrado"));
     }
 }
 

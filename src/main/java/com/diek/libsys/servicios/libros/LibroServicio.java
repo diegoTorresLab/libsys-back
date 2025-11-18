@@ -16,14 +16,4 @@ public interface LibroServicio {
     Optional<LibroDTO> obtenerLibroPorId(String idLibro);
     
     void borrarLibro(String idLibro);
-
-    //ManejarAutores
-    LibroDTO agregarAutorLibro(String idLibro, String idAutor);
-
-    LibroDTO borrarAutorLibro(String idLibro, String idAutor);
-
-    //Manejar Generos
-    LibroDTO agregarGeneroLibro(String idLibro, String idGenero);
-
-    LibroDTO borrarGeneroLibro(String idLibro, String idGenero);
 }
