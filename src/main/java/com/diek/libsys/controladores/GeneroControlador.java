@@ -29,7 +29,7 @@ public class GeneroControlador {
     @PostMapping
     public ResponseEntity<Genero> guardarGenero(@RequestBody Genero genero){
         try {
-            Genero guardarGenero = generoImplementacionServicio.guardarGenero(genero);
+            Genero guardarGenero =  generoImplementacionServicio.guardarGenero(genero);
             return new ResponseEntity<>(guardarGenero, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

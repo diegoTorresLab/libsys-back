@@ -48,7 +48,6 @@ public class Libro {
     private String titulo;
 
     @NotEmpty
-    @Column(unique = true)
     private String isbn;
 
     @ManyToOne(fetch = FetchType.LAZY)

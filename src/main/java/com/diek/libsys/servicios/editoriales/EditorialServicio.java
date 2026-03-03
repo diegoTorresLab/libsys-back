@@ -1,6 +1,7 @@
 package com.diek.libsys.servicios.editoriales;
 import java.util.List;
 import java.util.Optional;
+
 import com.diek.libsys.entidades.Editorial;
 
 public interface EditorialServicio {
